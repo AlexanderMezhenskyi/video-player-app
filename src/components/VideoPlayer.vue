@@ -5,8 +5,7 @@ import Controls from '@/components/Controls.vue'
 import Loader from '@/components/Loader.vue'
 import { useVideoPlayer } from '@/composables/useVideoPlayer'
 
-const videoSource =
-  'https://meetyoo-code-challenge.s3.eu-central-1.amazonaws.com/live/S14JJ9Z6PKoO/bf1d4883-5305-4d65-a299-cbb654ef1ed9/video.webm'
+const videoSource = import.meta.env.VITE_ORIGINAL_VIDEO_URL
 
 const videoComponentRef = ref<InstanceType<typeof VideoElement> | null>(null)
 const videoRef = computed(() => videoComponentRef.value?.videoRef ?? null)
