@@ -4,7 +4,7 @@ export function useVideoState() {
   const currentTime = ref(0)
   const duration = ref(0)
   const volume = ref(0.5)
-  const seekValue = ref(0)
+  const lastMouseMoveTime = ref(Date.now())
   const isLoading = ref(true)
   const isPlaying = ref(false)
   const isEnded = ref(false)
@@ -12,12 +12,13 @@ export function useVideoState() {
   const isCaptions = ref(false)
   const isPiP = ref(false)
   const isFullscreen = ref(false)
+  const isControlsVisible = ref(true)
 
   return {
     currentTime,
     duration,
     volume,
-    seekValue,
+    lastMouseMoveTime,
     isLoading,
     isPlaying,
     isEnded,
@@ -25,5 +26,6 @@ export function useVideoState() {
     isCaptions,
     isPiP,
     isFullscreen,
+    isControlsVisible,
   }
 }

@@ -1,6 +1,7 @@
 import { onMounted, onUnmounted } from 'vue'
+import type { Ref } from 'vue'
 
-export function useFullscreenListener(isFullscreen: any) {
+export function useFullscreenListener(isFullscreen: Ref<boolean>) {
   const onFullscreenChange = () => {
     isFullscreen.value = !!document.fullscreenElement
   }

@@ -21,6 +21,7 @@ const props = defineProps<{
   isCaptions: boolean
   isPiP: boolean
   isFullscreen: boolean
+  isControlsVisible: boolean
   currentTime: number
   duration: number
   volume: number
@@ -45,7 +46,7 @@ watch(currentTime, (newVal: number): void => {
 </script>
 
 <template>
-  <div class="controls">
+  <div class="controls" :class="{ hidden: !isControlsVisible }">
     <input
       class="seek-bar"
       type="range"
@@ -63,7 +64,9 @@ watch(currentTime, (newVal: number): void => {
           <component :is="isEnded ? RepeatIcon : isPlaying ? PauseIcon : PlayIcon" />
         </button>
 
-        <span>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+        <span class="time-display"
+          >{{ formatDuration(currentTime) }} / {{ formatDuration(duration) }}</span
+        >
       </div>
 
       <div class="controls-group controls-group-right">
@@ -115,24 +118,30 @@ watch(currentTime, (newVal: number): void => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: transparent;
   padding: 0 16px 8px;
+  transition: opacity 0.3s ease;
+
+  &.hidden {
+    opacity: 0;
+  }
 }
 
 .controls-row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 
   button {
     display: flex;
     justify-content: center;
     align-items: center;
+    color: $color-light;
     background: none;
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 6px;
+    padding: 5px;
     border-radius: 8px;
     transition:
       background 0.2s ease,
@@ -141,11 +150,9 @@ watch(currentTime, (newVal: number): void => {
     svg {
       width: 24px;
       height: 24px;
-      color: $color-light;
     }
 
     &:hover {
-      background: $color-controls-light;
       transform: scale(1.05);
     }
 
@@ -154,7 +161,7 @@ watch(currentTime, (newVal: number): void => {
     }
   }
 
-  span {
+  .time-display {
     color: $color-light;
     font-size: 14px;
     font-weight: 500;
@@ -168,53 +175,52 @@ watch(currentTime, (newVal: number): void => {
   gap: 10px;
 }
 
-.seek-bar {
-  width: 100%;
-}
-
-.volume-bar {
-  width: 80px;
-}
-
 .seek-bar,
 .volume-bar {
+  position: relative;
+  width: 100%;
+  height: 8px;
   appearance: none;
-  height: 5px;
-  border-radius: 2px;
+  border-radius: 4px;
   outline: none;
   cursor: pointer;
 
   background: linear-gradient(
     to right,
-    $color-controls-light var(--progress),
+    $color-accent var(--progress),
     rgba(255, 255, 255, 0.2) var(--progress)
   );
 
   &:hover {
     background: linear-gradient(
       to right,
-      $color-controls-light var(--progress),
+      $color-accent var(--progress),
       rgba(255, 255, 255, 0.4) var(--progress)
     );
   }
 
   &::-webkit-slider-thumb {
     appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: $color-controls-light;
+    background: $color-light;
     transition: background 0.2s ease;
     position: relative;
     z-index: 1;
   }
 
   &::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: $color-controls-light;
+    background: $color-light;
     border: none;
   }
+}
+
+.volume-bar {
+  width: 80px;
+  height: 6px;
 }
 </style>

@@ -23,6 +23,7 @@ const {
   isCaptions,
   isPiP,
   isFullscreen,
+  isControlsVisible,
   onPlay,
   onPause,
   onVideoEnded,
@@ -80,8 +81,10 @@ const {
 
 <style scoped lang="scss">
 .video-player-wrapper {
-  background: $color-controls-light;
-  border-radius: 60px;
+  margin-bottom: 24px;
+  background: $color-accent;
+  border: 1px solid $color-light;
+  border-radius: 60px 60px 12px 12px;
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -89,7 +92,7 @@ h1 {
   color: $color-light;
   font-size: 24px;
   margin: 0;
-  padding: 2px;
+  padding: 5px;
 }
 
 .video-player {
@@ -97,9 +100,15 @@ h1 {
   width: 800px;
   aspect-ratio: 16 / 9;
   background: $color-dark;
-  border-radius: 30px 30px $border-radius-lg $border-radius-lg;
+  border-radius: 30px 30px 10px 10px;
   overflow: hidden;
   margin: auto;
+
+  &.full-screen {
+    display: flex;
+    align-self: center;
+    border-radius: 0;
+  }
 
   @media (max-width: 992px) {
     width: 100%;
