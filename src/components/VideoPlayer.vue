@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import VideoElement from '@/components/VideoElement.vue'
+import ChapterList from '@/components/ChapterList.vue'
 import Controls from '@/components/Controls.vue'
 import Loader from '@/components/Loader.vue'
+import VideoElement from '@/components/VideoElement.vue'
 import { useVideoPlayer } from '@/composables/useVideoPlayer'
+import { useChapters } from '@/composables/useChapters'
 
 const videoSource = import.meta.env.VITE_ORIGINAL_VIDEO_URL
+const chaptersSource = import.meta.env.VITE_ORIGINAL_XML_URL
 
 const videoComponentRef = ref<InstanceType<typeof VideoElement> | null>(null)
 const videoRef = computed(() => videoComponentRef.value?.videoRef ?? null)
@@ -15,7 +18,8 @@ const {
   currentTime,
   duration,
   volume,
-  seekValue,
+  chapters,
+  currentChapter,
   isLoading,
   isPlaying,
   isEnded,
@@ -24,8 +28,10 @@ const {
   isPiP,
   isFullscreen,
   isControlsVisible,
+  isChapters,
   onPlay,
   onPause,
+  onVideoLoaded,
   onVideoEnded,
   onTimeUpdate,
   onSeek,
@@ -36,56 +42,85 @@ const {
   toggleCaptions,
   togglePiP,
   toggleFullscreen,
+  toggleChapters,
 } = useVideoPlayer(videoRef, videoPlayerRef)
+
+useChapters(chaptersSource, chapters, currentChapter)
 </script>
 
 <template>
   <div class="video-player-wrapper">
-    <h1>Experience Events Without Borders</h1>
-    <div class="video-player" ref="videoPlayerRef">
-      <Loader v-if="isLoading" />
+    <div class="video-player-bg">
+      <h1>Experience Events Without Borders</h1>
+      <div ref="videoPlayerRef" class="video-player" :class="{ 'full-screen': isFullscreen }">
+        <Loader v-if="isLoading" />
 
-      <VideoElement
-        ref="videoComponentRef"
-        :src="videoSource"
-        @ended="onVideoEnded"
-        @loadedData="isLoading = false"
-        @loadedMetadata="onLoadedMetadata"
-        @play="onPlay"
-        @pause="onPause"
-        @timeUpdate="onTimeUpdate"
-      />
+        <VideoElement
+          ref="videoComponentRef"
+          :src="videoSource"
+          @ended="onVideoEnded"
+          @loadedData="onVideoLoaded"
+          @loadedMetadata="onLoadedMetadata"
+          @play="onPlay"
+          @pause="onPause"
+          @timeUpdate="onTimeUpdate"
+        />
 
-      <Controls
-        :isPlaying="isPlaying"
-        :isEnded="isEnded"
-        :isMuted="isMuted"
-        :isCaptions="isCaptions"
-        :isPiP="isPiP"
-        :isFullscreen="isFullscreen"
-        :currentTime="currentTime"
-        :duration="duration"
-        :volume="volume"
-        :seekValue="seekValue"
-        @playPause="togglePlay"
-        @muteToggle="toggleMute"
-        @captionsToggle="toggleCaptions"
-        @pipToggle="togglePiP"
-        @fullscreenToggle="toggleFullscreen"
-        @seek="onSeek"
-        @volumeChange="onVolumeChange"
-      />
+        <Controls
+          :currentTime="currentTime"
+          :duration="duration"
+          :volume="volume"
+          :currentChapter="currentChapter"
+          :isPlaying="isPlaying"
+          :isEnded="isEnded"
+          :isMuted="isMuted"
+          :isCaptions="isCaptions"
+          :isPiP="isPiP"
+          :isFullscreen="isFullscreen"
+          :isControlsVisible="isControlsVisible"
+          :isChapters="isChapters"
+          @playPause="togglePlay"
+          @muteToggle="toggleMute"
+          @captionsToggle="toggleCaptions"
+          @pipToggle="togglePiP"
+          @fullscreenToggle="toggleFullscreen"
+          @chaptersToggle="toggleChapters"
+          @seek="onSeek"
+          @volumeChange="onVolumeChange"
+        />
+      </div>
     </div>
+    <Transition name="fade">
+      <ChapterList
+        v-show="isChapters"
+        :chapters="chapters"
+        :isChapters="isChapters"
+        @seek="onSeek"
+      />
+    </Transition>
   </div>
 </template>
 
 <style scoped lang="scss">
 .video-player-wrapper {
-  margin-bottom: 24px;
+  padding-top: 50px;
+
+  @media (max-width: 992px) {
+    padding-top: 20px;
+  }
+}
+
+.video-player-bg {
+  width: 800px;
+  margin: 0 auto 24px;
   background: $color-accent;
   border: 1px solid $color-light;
   border-radius: 60px 60px 12px 12px;
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 }
 
 h1 {
@@ -93,11 +128,11 @@ h1 {
   font-size: 24px;
   margin: 0;
   padding: 5px;
+  text-align: center;
 }
 
 .video-player {
   position: relative;
-  width: 800px;
   aspect-ratio: 16 / 9;
   background: $color-dark;
   border-radius: 30px 30px 10px 10px;
@@ -109,9 +144,20 @@ h1 {
     align-self: center;
     border-radius: 0;
   }
+}
 
-  @media (max-width: 992px) {
-    width: 100%;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
 }
 </style>

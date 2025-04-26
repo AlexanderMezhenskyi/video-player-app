@@ -1,10 +1,13 @@
 import { ref } from 'vue'
+import type { Chapter } from '@/types/types.ts'
 
 export function useVideoState() {
   const currentTime = ref(0)
   const duration = ref(0)
   const volume = ref(0.5)
   const lastMouseMoveTime = ref(Date.now())
+  const chapters = ref<Chapter[]>([])
+  const currentChapter = ref<Chapter>({ time: 0, title: '' })
   const isLoading = ref(true)
   const isPlaying = ref(false)
   const isEnded = ref(false)
@@ -13,12 +16,15 @@ export function useVideoState() {
   const isPiP = ref(false)
   const isFullscreen = ref(false)
   const isControlsVisible = ref(true)
+  const isChapters = ref(false)
 
   return {
     currentTime,
     duration,
     volume,
     lastMouseMoveTime,
+    chapters,
+    currentChapter,
     isLoading,
     isPlaying,
     isEnded,
@@ -27,5 +33,6 @@ export function useVideoState() {
     isPiP,
     isFullscreen,
     isControlsVisible,
+    isChapters,
   }
 }

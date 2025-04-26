@@ -12,9 +12,16 @@ import PictureInPictureIcon from '@/components/Icons/PictureInPictureIcon.vue'
 import ArrowOutUpLeft from '@/components/Icons/ArrowOutUpLeft.vue'
 import MaximizeIcon from '@/components/Icons/MaximizeIcon.vue'
 import MinimizeIcon from '@/components/Icons/MinimizeIcon.vue'
-import { formatTime } from '@/utils/helpers.ts'
+import ChevronsUpIcon from '@/components/Icons/ChevronsUpIcon.vue'
+import ChevronsDownIcon from '@/components/Icons/ChevronsDownIcon.vue'
+import { formatDuration } from '@/utils/helpers.ts'
+import type { Chapter } from '@/types/types.ts'
 
 const props = defineProps<{
+  currentTime: number
+  duration: number
+  volume: number
+  currentChapter?: Chapter
   isPlaying: boolean
   isEnded: boolean
   isMuted: boolean
@@ -22,9 +29,7 @@ const props = defineProps<{
   isPiP: boolean
   isFullscreen: boolean
   isControlsVisible: boolean
-  currentTime: number
-  duration: number
-  volume: number
+  isChapters: boolean
 }>()
 
 defineEmits<{
@@ -33,6 +38,7 @@ defineEmits<{
   (e: 'captionsToggle'): void
   (e: 'pipToggle'): void
   (e: 'fullscreenToggle'): void
+  (e: 'chaptersToggle'): void
   (e: 'seek', event: Event): void
   (e: 'volumeChange', event: Event): void
 }>()
@@ -64,9 +70,19 @@ watch(currentTime, (newVal: number): void => {
           <component :is="isEnded ? RepeatIcon : isPlaying ? PauseIcon : PlayIcon" />
         </button>
 
-        <span class="time-display"
-          >{{ formatDuration(currentTime) }} / {{ formatDuration(duration) }}</span
-        >
+        <span class="time-display">
+          {{ formatDuration(currentTime) }} / {{ formatDuration(duration) }}
+        </span>
+
+        <div v-if="currentChapter?.title" class="chapter">
+          <span>&middot;</span>
+          <span class="chapter-title">
+            {{ currentChapter.title }}
+          </span>
+          <button v-if="!isFullscreen" @click="$emit('chaptersToggle')">
+            <component :is="isChapters ? ChevronsUpIcon : ChevronsDownIcon" />
+          </button>
+        </div>
       </div>
 
       <div class="controls-group controls-group-right">
@@ -147,11 +163,6 @@ watch(currentTime, (newVal: number): void => {
       background 0.2s ease,
       transform 0.2s ease;
 
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-
     &:hover {
       transform: scale(1.05);
     }
@@ -159,6 +170,11 @@ watch(currentTime, (newVal: number): void => {
     &:active {
       transform: scale(0.95);
     }
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
   }
 
   .time-display {
@@ -172,7 +188,7 @@ watch(currentTime, (newVal: number): void => {
 .controls-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 .seek-bar,
@@ -222,5 +238,31 @@ watch(currentTime, (newVal: number): void => {
 .volume-bar {
   width: 80px;
   height: 6px;
+}
+
+.chapter {
+  display: flex;
+  align-items: center;
+  color: $color-light;
+
+  &-title {
+    display: inline-block;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    margin: 0 5px;
+  }
+
+  button {
+    padding: 0;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+  }
 }
 </style>

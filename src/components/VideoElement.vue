@@ -37,6 +37,5 @@ defineExpose({ videoRef })
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
 }
 </style>

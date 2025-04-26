@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import type { Chapter } from '@/types/types.ts'
 
 export function useVideoActions(
   videoRef: Ref<HTMLVideoElement | null | undefined>,
@@ -30,11 +31,23 @@ export function useVideoActions(
     }
   }
 
-  const onSeek = (e: Event) => {
-    const target = e.target as HTMLInputElement
-    if (videoRef.value) {
-      videoRef.value.currentTime = parseFloat(target.value)
+  const onSeek = (valueOrEvent: Event | number) => {
+    if (!videoRef.value) return
+
+    let time: number
+
+    if (typeof valueOrEvent === 'number') {
+      time = valueOrEvent
+    } else {
+      const target = valueOrEvent.target as HTMLInputElement
+      time = parseFloat(target.value)
     }
+
+    videoRef.value.currentTime = time
+
+    const chapters = [...state.chapters.value]
+    state.currentTime.value = time
+    state.currentChapter.value = chapters.reverse().find((chapter: Chapter) => chapter.time <= time)
   }
 
   const onVolumeChange = (e: Event) => {
@@ -67,6 +80,7 @@ export function useVideoActions(
 
     if (state.isEnded.value) {
       video.currentTime = 0
+      state.currentChapter.value = state.chapters.value[0]
       video.play()
     } else if (state.isPlaying.value) {
       video.pause()
@@ -87,21 +101,21 @@ export function useVideoActions(
   }
 
   const togglePiP = async () => {
-    if (!videoRef.value) return
+    const video = videoRef.value
+
+    if (!video) return
 
     try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture().then(() => {
-          state.isPiP.value = false
-        })
+      if (document.pictureInPictureElement === video) {
+        await document.exitPictureInPicture()
+        state.isPiP.value = false
       } else {
-        await videoRef.value.requestPictureInPicture().then(() => {
-          state.isPiP.value = true
-        })
+        await video.requestPictureInPicture()
+        state.isPiP.value = true
       }
     } catch (error) {
-      state.isPiP.value = false
       console.error('Picture-in-Picture error:', error)
+      state.isPiP.value = document.pictureInPictureElement === video
     }
   }
 
@@ -110,11 +124,23 @@ export function useVideoActions(
 
     if (!wrapper) return
 
-    if (!state.isFullscreen.value) {
-      wrapper.requestFullscreen()
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`)
+      })
     } else {
-      document.exitFullscreen()
+      document.exitFullscreen().catch((err) => {
+        console.error(`Error attempting to disable full-screen mode: ${err.message} (${err.name})`)
+      })
     }
+  }
+
+  const toggleChapters = () => {
+    const video = videoRef.value
+
+    if (!video) return
+
+    state.isChapters.value = !state.isChapters.value
   }
 
   return {
@@ -131,5 +157,6 @@ export function useVideoActions(
     toggleCaptions,
     togglePiP,
     toggleFullscreen,
+    toggleChapters,
   }
 }
