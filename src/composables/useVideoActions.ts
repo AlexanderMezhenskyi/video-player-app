@@ -73,6 +73,18 @@ export function useVideoActions(
     }
   }
 
+  const onBuffering = () => {
+    if (videoRef.value) {
+      state.isBuffering.value = true
+    }
+  }
+
+  const onPlaying = () => {
+    if (videoRef.value) {
+      state.isBuffering.value = false
+    }
+  }
+
   const togglePlay = () => {
     const video = videoRef.value
 
@@ -152,6 +164,8 @@ export function useVideoActions(
     onSeek,
     onVolumeChange,
     onVideoEnded,
+    onBuffering,
+    onPlaying,
     togglePlay,
     toggleMute,
     toggleCaptions,

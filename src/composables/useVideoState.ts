@@ -21,6 +21,7 @@ export function useVideoState() {
   const isFullscreen = ref(false)
   const isControlsVisible = ref(true)
   const isChapters = ref(false)
+  const isBuffering = ref(false)
 
   return {
     currentTime,
@@ -41,5 +42,6 @@ export function useVideoState() {
     isFullscreen,
     isControlsVisible,
     isChapters,
+    isBuffering,
   }
 }

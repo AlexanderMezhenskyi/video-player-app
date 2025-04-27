@@ -38,6 +38,7 @@ const {
   isFullscreen,
   isControlsVisible,
   isChapters,
+  isBuffering,
   onPlay,
   onPause,
   onVideoLoaded,
@@ -46,6 +47,8 @@ const {
   onSeek,
   onVolumeChange,
   onLoadedMetadata,
+  onBuffering,
+  onPlaying,
   togglePlay,
   toggleMute,
   toggleCaptions,
@@ -70,7 +73,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
         role="region"
         aria-label="Custom video player with custom controls"
       >
-        <Loader v-if="isLoading" />
+        <Loader v-if="isLoading || isBuffering" />
 
         <VideoElement
           ref="videoComponentRef"
@@ -79,8 +82,10 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
           @loadedData="onVideoLoaded"
           @loadedMetadata="onLoadedMetadata"
           @play="onPlay"
+          @playing="onPlaying"
           @pause="onPause"
           @timeUpdate="onTimeUpdate"
+          @buffering="onBuffering"
         />
 
         <Controls
