@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CloseIcon from '@/components/Icons/CloseIcon.vue'
+import Loader from '@/components/Loader.vue'
 import { formatTime } from '@/utils/helpers.ts'
 import type { Chapter } from '@/types/types.ts'
 import chapter1 from '@/assets/chapters/chapter1.png'
@@ -13,6 +14,7 @@ const chapterImages = [chapter1, chapter2, chapter3, chapter4, chapter5]
 defineProps<{
   chapters: Chapter[]
   isChapters: boolean
+  isChaptersLoading: boolean
 }>()
 
 defineEmits<{
@@ -29,22 +31,30 @@ defineEmits<{
         <CloseIcon />
       </button>
     </div>
-    <div class="chapter-list">
-      <button
-        v-for="(chapter, index) in chapters"
-        :key="index"
-        class="chapter-item"
-        type="button"
-        @click="$emit('seek', chapter.time)"
-        @keydown.enter="$emit('seek', chapter.time)"
-        @keydown.space.prevent="$emit('seek', chapter.time)"
-      >
-        <img :src="chapterImages[index]" :alt="chapter.title" class="chapter-image" />
-        <span class="chapter-content">
-          <span class="chapter-title">{{ chapter.title }}</span>
-          <span class="chapter-time">{{ formatTime(chapter.time) }}</span>
-        </span>
-      </button>
+    <div class="chapter-list-wrap">
+      <Loader v-if="isChaptersLoading" />
+      <div v-else class="chapter-list">
+        <template v-if="chapters.length > 0">
+          <button
+            v-for="(chapter, index) in chapters"
+            :key="index"
+            class="chapter-item"
+            type="button"
+            @click="$emit('seek', chapter.time)"
+            @keydown.enter="$emit('seek', chapter.time)"
+            @keydown.space.prevent="$emit('seek', chapter.time)"
+          >
+            <img :src="chapterImages[index]" :alt="chapter.title" class="chapter-image" />
+            <span class="chapter-content">
+              <span class="chapter-title">{{ chapter.title }}</span>
+              <span class="chapter-time">{{ formatTime(chapter.time) }}</span>
+            </span>
+          </button>
+        </template>
+        <template v-else>
+          <div class="empty">No chapters available</div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +66,12 @@ defineEmits<{
   border: 1px solid $color-light;
   border-radius: 30px 30px 12px 12px;
   box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+}
+
+.chapter-list-wrap {
+  position: relative;
+  min-height: 200px;
+  border-radius: 30px 30px 12px 12px;
 }
 
 .chapter-list {
@@ -145,5 +161,9 @@ defineEmits<{
 .chapter-time {
   font-size: 12px;
   color: $color-accent;
+}
+
+.empty {
+  text-align: center;
 }
 </style>

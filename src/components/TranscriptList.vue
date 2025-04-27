@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import ChevronUpIcon from '@/components/Icons/ChevronUpIcon.vue'
 import ChevronDownIcon from '@/components/Icons/ChevronDownIcon.vue'
+import Loader from '@/components/Loader.vue'
 import type { TranscriptCue } from '@/types/types.ts'
 import { formatTime } from '@/utils/helpers.ts'
 
@@ -9,6 +10,7 @@ const props = defineProps<{
   activeCueIndex: number | null
   transcript: TranscriptCue[]
   isTranscript: boolean
+  isTranscriptLoading: boolean
 }>()
 
 defineEmits<{
@@ -82,25 +84,31 @@ onBeforeUnmount(() => {
         <component :is="isTranscript ? ChevronUpIcon : ChevronDownIcon" />
       </button>
     </div>
-    <Transition name="accordion">
-      <div v-show="isTranscript" ref="transcriptList" class="transcript-list">
-        <div
-          v-for="(cue, index) in transcript"
-          :key="index"
-          :ref="(el) => (cueRefs[index] = el)"
-          :class="['transcript-line', { active: index === activeCueIndex }]"
-          role="listitem"
-          tabindex="0"
-          :aria-current="index === activeCueIndex ? 'true' : undefined"
-          @click="$emit('seek', cue.start)"
-          @keydown.enter="$emit('seek', cue.start)"
-          @keydown.space.prevent="$emit('seek', cue.start)"
-        >
-          <span class="transcript-time">{{ formatTime(cue.start) }}</span>
-          <span>{{ cue.text }}</span>
+    <div class="transcript-list-wrap">
+      <Loader v-if="isTranscriptLoading" />
+      <Transition v-else name="accordion">
+        <div v-show="isTranscript">
+          <div v-if="transcript.length > 0" ref="transcriptList" class="transcript-list">
+            <div
+              v-for="(cue, index) in transcript"
+              :key="index"
+              :ref="(el) => (cueRefs[index] = el)"
+              :class="['transcript-line', { active: index === activeCueIndex }]"
+              role="listitem"
+              tabindex="0"
+              :aria-current="index === activeCueIndex ? 'true' : undefined"
+              @click="$emit('seek', cue.start)"
+              @keydown.enter="$emit('seek', cue.start)"
+              @keydown.space.prevent="$emit('seek', cue.start)"
+            >
+              <span class="transcript-time">{{ formatTime(cue.start) }}</span>
+              <span>{{ cue.text }}</span>
+            </div>
+          </div>
+          <div v-else class="empty">No transcript available</div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </div>
 </template>
 
@@ -114,6 +122,12 @@ onBeforeUnmount(() => {
 
 h2 {
   padding-left: 8px;
+}
+
+.transcript-list-wrap {
+  position: relative;
+  min-height: 200px;
+  border-radius: 30px 30px 12px 12px;
 }
 
 .transcript-list {
@@ -202,5 +216,10 @@ h2 {
 .accordion-leave-from {
   max-height: 200px;
   opacity: 1;
+}
+
+.empty {
+  padding: 16px;
+  text-align: center;
 }
 </style>

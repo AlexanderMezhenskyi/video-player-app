@@ -6,6 +6,7 @@ export function useChapters(
   xmlUrl: string,
   chapters: Ref<Chapter[]>,
   currentChapter: Ref<Chapter>,
+  isChaptersLoading: Ref<boolean>,
 ) {
   const fetchChapters = async () => {
     try {
@@ -23,7 +24,10 @@ export function useChapters(
         'EventStream[value="chapters"][schemeIdUri="urn:mpeg:dash:event:2012"]',
       )
 
-      if (!eventStream) return []
+      if (!eventStream) {
+        isChaptersLoading.value = false
+        return []
+      }
 
       const events = Array.from(eventStream.getElementsByTagName('Event'))
 
@@ -35,6 +39,7 @@ export function useChapters(
     } catch (error) {
       console.error('Failed to fetch chapters:', error)
     }
+    isChaptersLoading.value = false
   }
 
   onMounted(fetchChapters)

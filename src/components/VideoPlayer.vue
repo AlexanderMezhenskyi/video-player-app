@@ -29,7 +29,9 @@ const {
   transcript,
   activeCueIndex,
   activeCue,
-  isLoading,
+  isVideoLoading,
+  isChaptersLoading,
+  isTranscriptLoading,
   isPlaying,
   isEnded,
   isMuted,
@@ -59,8 +61,8 @@ const {
   toogleTranscript,
 } = useVideoPlayer(videoRef, videoPlayerRef)
 
-useChapters(chaptersUrl, chapters, currentChapter)
-useTranscript(transcriptUrl, transcript)
+useChapters(chaptersUrl, chapters, currentChapter, isChaptersLoading)
+useTranscript(transcriptUrl, transcript, isTranscriptLoading)
 useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
 </script>
 
@@ -76,7 +78,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
           role="region"
           aria-label="Custom video player with custom controls"
         >
-          <Loader v-if="isLoading || isBuffering" />
+          <Loader v-if="isVideoLoading || isBuffering" />
 
           <VideoElement
             ref="videoComponentRef"
@@ -128,6 +130,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
         :activeCueIndex="activeCueIndex"
         :transcript="transcript"
         :isTranscript="isTranscript"
+        :isTranscriptLoading="isTranscriptLoading"
         @seek="onSeek"
         @transcriptToggle="toogleTranscript"
       />
@@ -138,6 +141,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
           v-show="isChapters"
           :chapters="chapters"
           :isChapters="isChapters"
+          :isChaptersLoading="isChaptersLoading"
           @seek="onSeek"
           @chaptersToggle="toggleChapters"
         />

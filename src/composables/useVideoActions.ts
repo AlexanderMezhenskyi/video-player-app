@@ -16,7 +16,7 @@ export function useVideoActions(
   }
 
   const onVideoLoaded = () => {
-    state.isLoading.value = false
+    state.isVideoLoading.value = false
   }
 
   const onLoadedMetadata = () => {

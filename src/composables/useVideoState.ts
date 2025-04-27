@@ -12,7 +12,9 @@ export function useVideoState() {
   const transcript = ref<TranscriptCue[]>([])
   const activeCueIndex = ref<number | null>(null)
   const activeCue = ref<TranscriptCue | null>(null)
-  const isLoading = ref(true)
+  const isVideoLoading = ref(true)
+  const isChaptersLoading = ref(true)
+  const isTranscriptLoading = ref(true)
   const isPlaying = ref(false)
   const isEnded = ref(false)
   const isMuted = ref(false)
@@ -34,7 +36,9 @@ export function useVideoState() {
     transcript,
     activeCueIndex,
     activeCue,
-    isLoading,
+    isVideoLoading,
+    isChaptersLoading,
+    isTranscriptLoading,
     isPlaying,
     isEnded,
     isMuted,

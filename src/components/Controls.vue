@@ -78,7 +78,8 @@ watch(currentTime, (newVal: number): void => {
         </button>
 
         <span class="time-display" id="time-display">
-          {{ formatDuration(currentTime) }} <span class="end">&sol;</span>
+          <span>{{ formatDuration(currentTime) }}</span>
+          <span class="end">&sol;</span>
           <span class="end">{{ formatDuration(duration) }}</span>
         </span>
 
@@ -173,11 +174,11 @@ watch(currentTime, (newVal: number): void => {
   padding: 0 16px 8px;
   transition: opacity 0.3s ease;
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     padding: 0 8px 8px;
   }
 
-  @media (max-width: 568px) {
+  @media (max-width: 768px) {
     padding: 0 4px 8px;
   }
 
@@ -314,12 +315,16 @@ watch(currentTime, (newVal: number): void => {
 
   &-title {
     display: inline-block;
-    max-width: 300px;
+    max-width: 190px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
     margin: 0 5px;
+
+    @media (max-width: 992px) {
+      max-width: 180px;
+    }
 
     @media (max-width: 768px) {
       max-width: 180px;

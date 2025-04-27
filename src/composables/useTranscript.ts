@@ -2,12 +2,17 @@ import { onMounted } from 'vue'
 import type { Ref } from 'vue'
 import type { TranscriptCue } from '@/types/types.ts'
 
-export function useTranscript(url: string, transcript: Ref<TranscriptCue[]>) {
+export function useTranscript(
+  url: string,
+  transcript: Ref<TranscriptCue[]>,
+  isTranscriptLoading: Ref<boolean>,
+) {
   const fetchTranscript = async () => {
     try {
       const response = await fetch(url)
 
       if (!response.ok) {
+        isTranscriptLoading.value = false
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
@@ -16,6 +21,7 @@ export function useTranscript(url: string, transcript: Ref<TranscriptCue[]>) {
     } catch (error) {
       console.error('Failed to fetch transcript:', error)
     }
+    isTranscriptLoading.value = false
   }
 
   const parseVTT = (vtt: string): TranscriptCue[] => {
