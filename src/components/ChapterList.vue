@@ -1,6 +1,14 @@
 <script setup lang="ts">
+import CloseIcon from '@/components/Icons/CloseIcon.vue'
 import { formatTime } from '@/utils/helpers.ts'
 import type { Chapter } from '@/types/types.ts'
+import chapter1 from '@/assets/chapters/chapter1.png'
+import chapter2 from '@/assets/chapters/chapter2.png'
+import chapter3 from '@/assets/chapters/chapter3.png'
+import chapter4 from '@/assets/chapters/chapter4.png'
+import chapter5 from '@/assets/chapters/chapter5.png'
+
+const chapterImages = [chapter1, chapter2, chapter3, chapter4, chapter5]
 
 defineProps<{
   chapters: Chapter[]
@@ -9,51 +17,86 @@ defineProps<{
 
 defineEmits<{
   (e: 'seek', time: number): void
+  (e: 'chaptersToggle'): void
 }>()
 </script>
 
 <template>
-  <div class="chapter-list">
-    <h2>Chapters</h2>
-    <button
-      v-for="(chapter, index) in chapters"
-      :key="index"
-      class="chapter-item"
-      @click="$emit('seek', chapter.time)"
-      type="button"
-    >
-      <span class="chapter-time">{{ formatTime(chapter.time) }}</span>
-      <span class="chapter-title">{{ chapter.title }}</span>
-    </button>
+  <div class="chapters">
+    <div class="chapters-title">
+      <h2>Chapters</h2>
+      <button aria-label="Close chapter list" @click="$emit('chaptersToggle')">
+        <CloseIcon />
+      </button>
+    </div>
+    <div class="chapter-list">
+      <button
+        v-for="(chapter, index) in chapters"
+        :key="index"
+        class="chapter-item"
+        type="button"
+        @click="$emit('seek', chapter.time)"
+        @keydown.enter="$emit('seek', chapter.time)"
+        @keydown.space.prevent="$emit('seek', chapter.time)"
+      >
+        <img :src="chapterImages[index]" :alt="chapter.title" class="chapter-image" />
+        <span class="chapter-content">
+          <span class="chapter-title">{{ chapter.title }}</span>
+          <span class="chapter-time">{{ formatTime(chapter.time) }}</span>
+        </span>
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.chapters {
+  margin: 0 0 24px;
+  background: $color-light;
+  border: 1px solid $color-light;
+  border-radius: 30px 30px 12px 12px;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+}
+
 .chapter-list {
   display: flex;
   flex-direction: column;
-  width: 800px;
-  margin: 0 auto 24px;
   gap: 8px;
-  padding: 16px 0;
-  text-align: left;
-  background: $color-light;
-  border-radius: $border-radius-lg;
-  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
-  opacity: 1;
-  transition: opacity 0.3s ease;
-
-  &[style*='display: none'] {
-    opacity: 0;
-  }
-
-  @media (max-width: 992px) {
-    width: 100%;
-  }
+  padding: 16px;
 }
 
-h2 {
-  padding: 0 24px;
+.chapters-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 16px;
+  background: $color-accent;
+  border-radius: 30px 30px 0 0;
+  color: $color-light;
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $color-light;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
 
 .chapter-item {
@@ -62,12 +105,13 @@ h2 {
   align-items: center;
   font: inherit;
   cursor: pointer;
-  padding: 4px 24px;
+  padding: 8px;
+  border: none;
   border-radius: $border-radius-md;
   white-space: nowrap;
-  background: none;
-  border: none;
+  background: transparent;
   text-align: left;
+  transition: background 0.3s ease;
 
   &:hover,
   &:focus {
@@ -76,8 +120,30 @@ h2 {
   }
 }
 
+.chapter-image {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.chapter-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 12px;
+}
+
+.chapter-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: normal;
+}
+
 .chapter-time {
+  font-size: 12px;
   color: $color-accent;
-  margin-right: 5px;
 }
 </style>

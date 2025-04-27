@@ -20,8 +20,9 @@ export function useVideoState() {
   const isPiP = ref(false)
   const isFullscreen = ref(false)
   const isControlsVisible = ref(true)
-  const isChapters = ref(false)
+  const isChapters = ref(true)
   const isBuffering = ref(false)
+  const isTranscript = ref(true)
 
   return {
     currentTime,
@@ -43,5 +44,6 @@ export function useVideoState() {
     isControlsVisible,
     isChapters,
     isBuffering,
+    isTranscript,
   }
 }

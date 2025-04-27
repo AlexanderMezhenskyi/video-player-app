@@ -39,6 +39,7 @@ const {
   isControlsVisible,
   isChapters,
   isBuffering,
+  isTranscript,
   onPlay,
   onPause,
   onVideoLoaded,
@@ -55,6 +56,7 @@ const {
   togglePiP,
   toggleFullscreen,
   toggleChapters,
+  toogleTranscript,
 } = useVideoPlayer(videoRef, videoPlayerRef)
 
 useChapters(chaptersUrl, chapters, currentChapter)
@@ -63,84 +65,124 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
 </script>
 
 <template>
-  <div class="video-player-wrapper" role="main">
-    <div class="video-player-bg">
-      <h1>Experience Events Without Borders</h1>
-      <div
-        ref="videoPlayerRef"
-        class="video-player"
-        :class="{ 'full-screen': isFullscreen }"
-        role="region"
-        aria-label="Custom video player with custom controls"
-      >
-        <Loader v-if="isLoading || isBuffering" />
+  <div class="video-player-container" role="main">
+    <div class="column column-left">
+      <div class="video-player-bg">
+        <h1>Experience Events Without Borders</h1>
+        <div
+          ref="videoPlayerRef"
+          class="video-player"
+          :class="{ 'full-screen': isFullscreen }"
+          role="region"
+          aria-label="Custom video player with custom controls"
+        >
+          <Loader v-if="isLoading || isBuffering" />
 
-        <VideoElement
-          ref="videoComponentRef"
-          :src="videoSource"
-          @ended="onVideoEnded"
-          @loadedData="onVideoLoaded"
-          @loadedMetadata="onLoadedMetadata"
-          @play="onPlay"
-          @playing="onPlaying"
-          @pause="onPause"
-          @timeUpdate="onTimeUpdate"
-          @buffering="onBuffering"
-        />
-
-        <Controls
-          :currentTime="currentTime"
-          :duration="duration"
-          :volume="volume"
-          :currentChapter="currentChapter"
-          :isPlaying="isPlaying"
-          :isEnded="isEnded"
-          :isMuted="isMuted"
-          :isCaptions="isCaptions"
-          :isPiP="isPiP"
-          :isFullscreen="isFullscreen"
-          :isControlsVisible="isControlsVisible"
-          :isChapters="isChapters"
-          @playPause="togglePlay"
-          @muteToggle="toggleMute"
-          @captionsToggle="toggleCaptions"
-          @pipToggle="togglePiP"
-          @fullscreenToggle="toggleFullscreen"
-          @chaptersToggle="toggleChapters"
-          @seek="onSeek"
-          @volumeChange="onVolumeChange"
-        />
-
-        <Transition name="fade">
-          <CustomSubtitles
-            v-show="isCaptions"
-            :activeCue="activeCue"
-            :isFullscreen="isFullscreen"
+          <VideoElement
+            ref="videoComponentRef"
+            :src="videoSource"
+            @ended="onVideoEnded"
+            @loadedData="onVideoLoaded"
+            @loadedMetadata="onLoadedMetadata"
+            @play="onPlay"
+            @playing="onPlaying"
+            @pause="onPause"
+            @timeUpdate="onTimeUpdate"
+            @buffering="onBuffering"
           />
-        </Transition>
-      </div>
-    </div>
-    <Transition name="fade">
-      <ChapterList
-        v-show="isChapters"
-        :chapters="chapters"
-        :isChapters="isChapters"
-        @seek="onSeek"
-      />
-    </Transition>
 
-    <TranscriptList :activeCueIndex="activeCueIndex" :transcript="transcript" @seek="onSeek" />
+          <Controls
+            :currentTime="currentTime"
+            :duration="duration"
+            :volume="volume"
+            :currentChapter="currentChapter"
+            :isPlaying="isPlaying"
+            :isEnded="isEnded"
+            :isMuted="isMuted"
+            :isCaptions="isCaptions"
+            :isPiP="isPiP"
+            :isFullscreen="isFullscreen"
+            :isControlsVisible="isControlsVisible"
+            :isChapters="isChapters"
+            @playPause="togglePlay"
+            @muteToggle="toggleMute"
+            @captionsToggle="toggleCaptions"
+            @pipToggle="togglePiP"
+            @fullscreenToggle="toggleFullscreen"
+            @chaptersToggle="toggleChapters"
+            @seek="onSeek"
+            @volumeChange="onVolumeChange"
+          />
+
+          <Transition name="fade">
+            <CustomSubtitles
+              v-show="isCaptions"
+              :activeCue="activeCue"
+              :isFullscreen="isFullscreen"
+            />
+          </Transition>
+        </div>
+      </div>
+
+      <TranscriptList
+        :activeCueIndex="activeCueIndex"
+        :transcript="transcript"
+        :isTranscript="isTranscript"
+        @seek="onSeek"
+        @transcriptToggle="toogleTranscript"
+      />
+    </div>
+    <div class="column column-right">
+      <Transition name="fade">
+        <ChapterList
+          v-show="isChapters"
+          :chapters="chapters"
+          :isChapters="isChapters"
+          @seek="onSeek"
+          @chaptersToggle="toggleChapters"
+        />
+      </Transition>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.video-player-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.column-left {
+  flex: 2;
+  min-width: 320px;
+
+  @media (max-width: 992px) {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+.column-right {
+  flex: 1;
+  width: 250px;
+  min-width: 150px;
+
+  @media (max-width: 992px) {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
 .video-player-bg {
-  width: 800px;
-  margin: 0 auto 24px;
+  width: 100%;
+  margin: 0 0 24px;
   background: $color-accent;
   border: 1px solid $color-light;
-  border-radius: 60px 60px 12px 12px;
-  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 30px 30px 12px 12px;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
 
   @media (max-width: 992px) {
     width: 100%;
@@ -158,7 +200,7 @@ h1 {
   position: relative;
   aspect-ratio: 16 / 9;
   background: $color-dark;
-  border-radius: 30px 30px 10px 10px;
+  border-radius: 0 0 10px 10px;
   overflow: hidden;
   margin: auto;
 
@@ -171,7 +213,7 @@ h1 {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.1s ease;
 }
 
 .fade-enter-from,

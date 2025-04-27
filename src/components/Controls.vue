@@ -12,8 +12,7 @@ import PictureInPictureIcon from '@/components/Icons/PictureInPictureIcon.vue'
 import ArrowOutUpLeft from '@/components/Icons/ArrowOutUpLeft.vue'
 import MaximizeIcon from '@/components/Icons/MaximizeIcon.vue'
 import MinimizeIcon from '@/components/Icons/MinimizeIcon.vue'
-import ChevronsUpIcon from '@/components/Icons/ChevronsUpIcon.vue'
-import ChevronsDownIcon from '@/components/Icons/ChevronsDownIcon.vue'
+import ChevronsRightIcon from '@/components/Icons/ChevronsRightIcon.vue'
 import { formatDuration } from '@/utils/helpers.ts'
 import type { Chapter } from '@/types/types.ts'
 
@@ -79,20 +78,27 @@ watch(currentTime, (newVal: number): void => {
         </button>
 
         <span class="time-display" id="time-display">
-          {{ formatDuration(currentTime) }} / {{ formatDuration(duration) }}
+          {{ formatDuration(currentTime) }} <span class="end">&sol;</span>
+          <span class="end">{{ formatDuration(duration) }}</span>
         </span>
 
         <div v-if="currentChapter?.title" class="chapter">
-          <span aria-hidden="true">&middot;</span>
-          <span class="chapter-title" id="chapter-title">
-            {{ currentChapter.title }}
+          <span class="chapter-title-wrap">
+            <span aria-hidden="true">&middot;</span>
+            <span class="chapter-title" id="chapter-title">
+              {{ currentChapter.title }}
+            </span>
+          </span>
+          <span class="chapter-title-wrap-mb">
+            <span aria-hidden="true">&middot;&nbsp;</span>
+            <span>Chapters</span>
           </span>
           <button
             v-if="!isFullscreen"
             :aria-label="isChapters ? 'Hide chapter list' : 'Show chapter list'"
             @click="$emit('chaptersToggle')"
           >
-            <component :is="isChapters ? ChevronsUpIcon : ChevronsDownIcon" />
+            <ChevronsRightIcon />
           </button>
         </div>
       </div>
@@ -167,6 +173,14 @@ watch(currentTime, (newVal: number): void => {
   padding: 0 16px 8px;
   transition: opacity 0.3s ease;
 
+  @media (max-width: 768px) {
+    padding: 0 8px 8px;
+  }
+
+  @media (max-width: 568px) {
+    padding: 0 4px 8px;
+  }
+
   &.hidden {
     opacity: 0;
   }
@@ -204,6 +218,11 @@ watch(currentTime, (newVal: number): void => {
   svg {
     width: 24px;
     height: 24px;
+
+    @media (max-width: 768px) {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   .time-display {
@@ -211,6 +230,17 @@ watch(currentTime, (newVal: number): void => {
     font-size: 14px;
     font-weight: 500;
     text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .end {
+      @media (max-width: 580px) {
+        display: none;
+      }
+    }
   }
 }
 
@@ -267,6 +297,14 @@ watch(currentTime, (newVal: number): void => {
 .volume-bar {
   width: 80px;
   height: 6px;
+
+  @media (max-width: 768px) {
+    width: 70px;
+  }
+
+  @media (max-width: 568px) {
+    width: 50px;
+  }
 }
 
 .chapter {
@@ -282,6 +320,10 @@ watch(currentTime, (newVal: number): void => {
     text-overflow: ellipsis;
     vertical-align: middle;
     margin: 0 5px;
+
+    @media (max-width: 768px) {
+      max-width: 180px;
+    }
   }
 
   button {
@@ -292,6 +334,20 @@ watch(currentTime, (newVal: number): void => {
     width: 18px;
     height: 18px;
     margin-top: 2px;
+  }
+}
+
+.chapter-title-wrap {
+  @media (max-width: 568px) {
+    display: none;
+  }
+}
+
+.chapter-title-wrap-mb {
+  display: none;
+
+  @media (max-width: 568px) {
+    display: block;
   }
 }
 </style>
