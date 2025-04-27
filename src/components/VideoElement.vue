@@ -19,7 +19,6 @@ defineExpose({ videoRef })
 <template>
   <video
     ref="videoRef"
-    :src="src"
     class="video"
     @ended="$emit('ended')"
     @loadeddata="$emit('loadedData')"
@@ -28,6 +27,7 @@ defineExpose({ videoRef })
     @pause="$emit('pause')"
     @timeupdate="$emit('timeUpdate', $event)"
   >
+    <source :src="src" type="video/webm" />
     Your browser does not support the video tag.
   </video>
 </template>

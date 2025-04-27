@@ -9,8 +9,12 @@ export function useChapters(
 ) {
   const fetchChapters = async () => {
     try {
-      const proxyUrl = import.meta.env.VITE_PROXY_BASE_URL
-      const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(xmlUrl)}`)
+      const response = await fetch(xmlUrl)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const xmlText = await response.text()
       const parser = new DOMParser()
       const xml = parser.parseFromString(xmlText, 'application/xml')
@@ -34,8 +38,4 @@ export function useChapters(
   }
 
   onMounted(fetchChapters)
-
-  return {
-    chapters,
-  }
 }

@@ -33,7 +33,7 @@ defineEmits<{
   display: flex;
   flex-direction: column;
   width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 24px;
   gap: 8px;
   padding: 16px 0;
   text-align: left;

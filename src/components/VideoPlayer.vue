@@ -2,13 +2,19 @@
 import { computed, ref } from 'vue'
 import ChapterList from '@/components/ChapterList.vue'
 import Controls from '@/components/Controls.vue'
+import CustomSubtitles from '@/components/CustomSubtitles.vue'
 import Loader from '@/components/Loader.vue'
+import TranscriptList from '@/components/TranscriptList.vue'
 import VideoElement from '@/components/VideoElement.vue'
 import { useVideoPlayer } from '@/composables/useVideoPlayer'
 import { useChapters } from '@/composables/useChapters'
+import { useTranscript } from '@/composables/useTranscript'
+import { useActiveCue } from '@/composables/useActiveCue.ts'
 
+const proxyUrl = import.meta.env.VITE_PROXY_BASE_URL
 const videoSource = import.meta.env.VITE_ORIGINAL_VIDEO_URL
-const chaptersSource = import.meta.env.VITE_ORIGINAL_XML_URL
+const chaptersUrl = `${proxyUrl}?url=${encodeURIComponent(import.meta.env.VITE_ORIGINAL_XML_URL)}`
+const transcriptUrl = `${proxyUrl}?url=${encodeURIComponent(import.meta.env.VITE_ORIGINAL_VTT_URL)}`
 
 const videoComponentRef = ref<InstanceType<typeof VideoElement> | null>(null)
 const videoRef = computed(() => videoComponentRef.value?.videoRef ?? null)
@@ -20,6 +26,9 @@ const {
   volume,
   chapters,
   currentChapter,
+  transcript,
+  activeCueIndex,
+  activeCue,
   isLoading,
   isPlaying,
   isEnded,
@@ -45,7 +54,9 @@ const {
   toggleChapters,
 } = useVideoPlayer(videoRef, videoPlayerRef)
 
-useChapters(chaptersSource, chapters, currentChapter)
+useChapters(chaptersUrl, chapters, currentChapter)
+useTranscript(transcriptUrl, transcript)
+useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
 </script>
 
 <template>
@@ -88,6 +99,14 @@ useChapters(chaptersSource, chapters, currentChapter)
           @seek="onSeek"
           @volumeChange="onVolumeChange"
         />
+
+        <Transition name="fade">
+          <CustomSubtitles
+            v-show="isCaptions"
+            :activeCue="activeCue"
+            :isFullscreen="isFullscreen"
+          />
+        </Transition>
       </div>
     </div>
     <Transition name="fade">
@@ -98,18 +117,12 @@ useChapters(chaptersSource, chapters, currentChapter)
         @seek="onSeek"
       />
     </Transition>
+
+    <TranscriptList :activeCueIndex="activeCueIndex" :transcript="transcript" @seek="onSeek" />
   </div>
 </template>
 
 <style scoped lang="scss">
-.video-player-wrapper {
-  padding-top: 50px;
-
-  @media (max-width: 992px) {
-    padding-top: 20px;
-  }
-}
-
 .video-player-bg {
   width: 800px;
   margin: 0 auto 24px;
