@@ -60,10 +60,16 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
 </script>
 
 <template>
-  <div class="video-player-wrapper">
+  <div class="video-player-wrapper" role="main">
     <div class="video-player-bg">
       <h1>Experience Events Without Borders</h1>
-      <div ref="videoPlayerRef" class="video-player" :class="{ 'full-screen': isFullscreen }">
+      <div
+        ref="videoPlayerRef"
+        class="video-player"
+        :class="{ 'full-screen': isFullscreen }"
+        role="region"
+        aria-label="Custom video player with custom controls"
+      >
         <Loader v-if="isLoading" />
 
         <VideoElement
@@ -139,7 +145,6 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
 h1 {
   color: $color-light;
   font-size: 24px;
-  margin: 0;
   padding: 5px;
   text-align: center;
 }
@@ -154,7 +159,7 @@ h1 {
 
   &.full-screen {
     display: flex;
-    align-self: center;
+    align-items: center;
     border-radius: 0;
   }
 }

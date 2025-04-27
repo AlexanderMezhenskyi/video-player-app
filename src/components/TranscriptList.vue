@@ -27,14 +27,19 @@ watch(activeCueIndex, (newIndex) => {
 </script>
 
 <template>
-  <div ref="transcriptList" class="transcript-list">
+  <div ref="transcriptList" class="transcript-list" role="list">
     <h2>Full Transcript</h2>
     <div
       v-for="(cue, index) in transcript"
       :key="index"
       :ref="(el) => (cueRefs[index] = el)"
       :class="['transcript-line', { active: index === activeCueIndex }]"
+      role="listitem"
+      tabindex="0"
+      :aria-current="index === activeCueIndex ? 'true' : undefined"
       @click="$emit('seek', cue.start)"
+      @keydown.enter="$emit('seek', cue.start)"
+      @keydown.space.prevent="$emit('seek', cue.start)"
     >
       <span class="transcript-time">{{ formatTime(cue.start) }}</span>
       <span>{{ cue.text }}</span>
@@ -44,7 +49,7 @@ watch(activeCueIndex, (newIndex) => {
 
 <style scoped lang="scss">
 .transcript-list {
-  width: 770px;
+  width: 800px;
   max-height: 200px;
   overflow-y: auto;
   padding: 16px;
@@ -56,7 +61,6 @@ watch(activeCueIndex, (newIndex) => {
 }
 
 h2 {
-  margin: 0;
   padding-left: 8px;
 }
 

@@ -20,6 +20,8 @@ defineExpose({ videoRef })
   <video
     ref="videoRef"
     class="video"
+    preload="metadata"
+    aria-label="Video player with custom controls"
     @ended="$emit('ended')"
     @loadeddata="$emit('loadedData')"
     @loadedmetadata="$emit('loadedMetadata', $event)"

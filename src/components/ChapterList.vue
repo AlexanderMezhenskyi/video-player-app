@@ -15,16 +15,16 @@ defineEmits<{
 <template>
   <div class="chapter-list">
     <h2>Chapters</h2>
-    <div
+    <button
       v-for="(chapter, index) in chapters"
       :key="index"
       class="chapter-item"
       @click="$emit('seek', chapter.time)"
+      type="button"
     >
       <span class="chapter-time">{{ formatTime(chapter.time) }}</span>
-      &ndash;
       <span class="chapter-title">{{ chapter.title }}</span>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -53,17 +53,31 @@ defineEmits<{
 }
 
 h2 {
-  margin: 0;
   padding: 0 24px;
 }
+
 .chapter-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font: inherit;
   cursor: pointer;
   padding: 4px 24px;
   border-radius: $border-radius-md;
   white-space: nowrap;
+  background: none;
+  border: none;
+  text-align: left;
+
+  &:hover,
+  &:focus {
+    background: rgba($color-accent-light, 0.2);
+    outline: none;
+  }
 }
 
 .chapter-time {
   color: $color-accent;
+  margin-right: 5px;
 }
 </style>

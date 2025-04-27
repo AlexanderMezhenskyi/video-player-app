@@ -8,7 +8,12 @@ defineProps<{
 </script>
 
 <template>
-  <div v-if="activeCue" class="custom-subtitles">
+  <div
+    v-if="activeCue"
+    class="custom-subtitles"
+    aria-live="polite"
+    aria-atomic="true"
+  >
     <div class="custom-subtitles-text">{{ activeCue.text }}</div>
   </div>
 </template>

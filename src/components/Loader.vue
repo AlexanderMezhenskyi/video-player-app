@@ -3,8 +3,14 @@ import LoaderIcon from '@/components/Icons/LoaderIcon.vue'
 </script>
 
 <template>
-  <div class="loader-overlay">
+  <div
+    class="loader-overlay"
+    role="status"
+    aria-live="polite"
+    aria-busy="true"
+  >
     <LoaderIcon />
+    <span class="sr-only">Loading...</span>
   </div>
 </template>
 
@@ -31,6 +37,18 @@ import LoaderIcon from '@/components/Icons/LoaderIcon.vue'
 
 .spinning {
   animation: spin 1s linear infinite;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @keyframes spin {

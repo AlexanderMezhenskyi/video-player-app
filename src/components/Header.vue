@@ -3,11 +3,11 @@ import logo from '@/assets/logo.svg'
 </script>
 
 <template>
-  <div class="header">
+  <nav class="header">
     <a href="/">
-      <img :src="logo" alt="logo" />
+      <img :src="logo" alt="Video Player App Home" />
     </a>
-  </div>
+  </nav>
 </template>
 
 <style scoped lang="scss">

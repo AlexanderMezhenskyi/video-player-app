@@ -54,39 +54,54 @@ watch(currentTime, (newVal: number): void => {
 <template>
   <div class="controls" :class="{ hidden: !isControlsVisible }">
     <input
+      v-model="seekValue"
       class="seek-bar"
       type="range"
       min="0"
       :max="duration"
       step="0.1"
-      v-model="seekValue"
       :style="{ '--progress': `${(seekValue / duration) * 100}%` }"
+      role="slider"
+      :aria-valuemin="0"
+      :aria-valuemax="duration"
+      :aria-valuenow="seekValue"
+      aria-label="Seek video"
       @input="$emit('seek', $event)"
     />
 
     <div class="controls-row">
       <div class="controls-group controls-group-left">
-        <button @click="$emit('playPause')">
+        <button
+          :aria-label="isEnded ? 'Replay video' : isPlaying ? 'Pause video' : 'Play video'"
+          @click="$emit('playPause')"
+          >
           <component :is="isEnded ? RepeatIcon : isPlaying ? PauseIcon : PlayIcon" />
         </button>
 
-        <span class="time-display">
+        <span class="time-display" id="time-display">
           {{ formatDuration(currentTime) }} / {{ formatDuration(duration) }}
         </span>
 
         <div v-if="currentChapter?.title" class="chapter">
-          <span>&middot;</span>
-          <span class="chapter-title">
+          <span aria-hidden="true">&middot;</span>
+          <span class="chapter-title" id="chapter-title">
             {{ currentChapter.title }}
           </span>
-          <button v-if="!isFullscreen" @click="$emit('chaptersToggle')">
+          <button
+            v-if="!isFullscreen"
+            :aria-label="isChapters ? 'Hide chapter list' : 'Show chapter list'"
+            @click="$emit('chaptersToggle')"
+          >
             <component :is="isChapters ? ChevronsUpIcon : ChevronsDownIcon" />
           </button>
         </div>
       </div>
 
       <div class="controls-group controls-group-right">
-        <button @click="$emit('muteToggle')">
+        <button
+          :aria-label="isMuted || volume === 0 ? 'Unmute' : 'Mute'"
+          @click="$emit('muteToggle')"
+        >
           <component
             :is="
               isMuted || volume === 0
@@ -106,18 +121,32 @@ watch(currentTime, (newVal: number): void => {
           step="0.01"
           :value="volume"
           :style="{ '--progress': `${volume * 100}%` }"
+          role="slider"
+          aria-valuemin="0"
+          aria-valuemax="1"
+          :aria-valuenow="volume"
+          aria-label="Volume control"
           @input="$emit('volumeChange', $event)"
         />
 
-        <button @click="$emit('captionsToggle')">
+        <button
+          :aria-label="isCaptions ? 'Hide captions' : 'Show captions'"
+          @click="$emit('captionsToggle')"
+        >
           <component :is="isCaptions ? CaptionsIcon : CaptionsOffIcon" />
         </button>
 
-        <button @click="$emit('pipToggle')">
+        <button
+          :aria-label="isPiP ? 'Exit picture-in-picture' : 'Enter picture-in-picture'"
+          @click="$emit('pipToggle')"
+        >
           <component :is="isPiP ? ArrowOutUpLeft : PictureInPictureIcon" />
         </button>
 
-        <button @click="$emit('fullscreenToggle')">
+        <button
+          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
+          @click="$emit('fullscreenToggle')"
+        >
           <component :is="isFullscreen ? MinimizeIcon : MaximizeIcon" />
         </button>
       </div>
