@@ -61,6 +61,13 @@ yarn <script_name>
 | `predeploy` | Automatically runs `yarn build` before deploying to GitHub Pages.       |
 | `deploy`    | Deploys the `dist` folder to GitHub Pages using the `gh-pages` package. |
 
+## 🌐 Proxy Server
+For some requests, a proxy server is used to handle CORS issues. The proxy server is deployed on Vercel and can be found in the following repository:
+
+[Proxy server repository - https://github.com/AlexanderMezhenskyi/video-player-app-proxy](https://github.com/AlexanderMezhenskyi/video-player-app-proxy)
+
+The proxy server is used to manage requests within the application and ensures smooth functionality.
+
 ## 🎮 Keyboard Shortcuts
 
 The video player provides several keyboard shortcuts for quick navigation and control. Here are the available shortcuts:
