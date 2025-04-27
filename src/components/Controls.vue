@@ -74,7 +74,7 @@ watch(currentTime, (newVal: number): void => {
         <button
           :aria-label="isEnded ? 'Replay video' : isPlaying ? 'Pause video' : 'Play video'"
           @click="$emit('playPause')"
-          >
+        >
           <component :is="isEnded ? RepeatIcon : isPlaying ? PauseIcon : PlayIcon" />
         </button>
 

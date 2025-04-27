@@ -60,3 +60,18 @@ yarn <script_name>
 | `format`    | Runs Prettier to enforce code formatting rules.                         |
 | `predeploy` | Automatically runs `yarn build` before deploying to GitHub Pages.       |
 | `deploy`    | Deploys the `dist` folder to GitHub Pages using the `gh-pages` package. |
+
+## 🎮 Keyboard Shortcuts
+
+The video player provides several keyboard shortcuts for quick navigation and control. Here are the available shortcuts:
+
+| Key              | Action                     |
+| ---------------- | -------------------------- |
+| `Space / k`      | Toggle Play / Pause        |
+| `ArrowLeft / j`  | Seek backward (10 seconds) |
+| `ArrowRight / l` | Seek forward (10 seconds)  |
+| `m`              | Toggle Mute                |
+| `ArrowUp`        | Increase volume (by 10%)   |
+| `ArrowDown`      | Decrease volume (by 10%)   |
+| `f`              | Toggle Fullscreen          |
+| `c`              | Toggle Captions            |

@@ -3,6 +3,7 @@ import { useVideoState } from '@/composables/useVideoState'
 import { useVideoActions } from '@/composables/useVideoActions'
 import { useFullscreenListener } from '@/composables/useFullscreenListener'
 import { useControlsVisibility } from '@/composables/useControlsVisibility'
+import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
 export function useVideoPlayer(
   videoRef: Ref<HTMLVideoElement | null | undefined>,
@@ -18,6 +19,7 @@ export function useVideoPlayer(
     state.isControlsVisible,
     state.lastMouseMoveTime,
   )
+  useKeyboardShortcuts(actions, state.volume, state.currentTime, state.duration)
 
   return { ...state, ...actions }
 }

@@ -4,7 +4,7 @@ import type { Chapter } from '@/types/types.ts'
 export function useVideoActions(
   videoRef: Ref<HTMLVideoElement | null | undefined>,
   videoWrapperRef: Ref<HTMLElement | null>,
-  state: any,
+  state: Record<string, Ref<any>>,
 ) {
   const onPlay = () => {
     state.isPlaying.value = true

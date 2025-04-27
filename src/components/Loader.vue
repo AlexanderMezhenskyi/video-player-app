@@ -3,12 +3,7 @@ import LoaderIcon from '@/components/Icons/LoaderIcon.vue'
 </script>
 
 <template>
-  <div
-    class="loader-overlay"
-    role="status"
-    aria-live="polite"
-    aria-busy="true"
-  >
+  <div class="loader-overlay" role="status" aria-live="polite" aria-busy="true">
     <LoaderIcon />
     <span class="sr-only">Loading...</span>
   </div>
