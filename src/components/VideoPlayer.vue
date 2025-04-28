@@ -45,6 +45,7 @@ const {
   onPlay,
   onPause,
   onVideoLoaded,
+  onVideoError,
   onVideoEnded,
   onTimeUpdate,
   onSeek,
@@ -91,6 +92,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
             @pause="onPause"
             @timeUpdate="onTimeUpdate"
             @buffering="onBuffering"
+            @error="onVideoError"
           />
 
           <Controls

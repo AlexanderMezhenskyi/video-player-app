@@ -19,6 +19,11 @@ export function useVideoActions(
     state.isVideoLoading.value = false
   }
 
+  const onVideoError = () => {
+    state.isVideoLoading.value = false
+    state.isBuffering.value = false
+  }
+
   const onLoadedMetadata = () => {
     if (videoRef.value) {
       state.duration.value = videoRef.value.duration
@@ -163,6 +168,7 @@ export function useVideoActions(
     onPlay,
     onPause,
     onVideoLoaded,
+    onVideoError,
     onLoadedMetadata,
     onTimeUpdate,
     onSeek,

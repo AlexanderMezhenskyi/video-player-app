@@ -16,6 +16,7 @@ defineEmits<{
   (e: 'playing'): void
   (e: 'timeUpdate', event: Event): void
   (e: 'buffering'): void
+  (e: 'error'): void
 }>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
@@ -25,16 +26,12 @@ const canPlayWebm = computed(() => {
   return videoRef.value.canPlayType('video/webm; codecs="vp8, opus"')
 })
 
-const shouldShowLoader = computed(() => {
-  return !canPlayWebm.value && (props.isVideoLoading || props.isBuffering)
-})
-
 defineExpose({ videoRef })
 </script>
 
 <template>
   <div>
-    <Loader v-if="shouldShowLoader" />
+    <Loader v-if="isVideoLoading || isBuffering" />
     <video
       v-show="canPlayWebm"
       ref="videoRef"
@@ -49,12 +46,13 @@ defineExpose({ videoRef })
       @pause="$emit('pause')"
       @timeupdate="$emit('timeUpdate', $event)"
       @waiting="$emit('buffering')"
+      @error="$emit('error')"
     >
       <source :src="src" type='video/webm; codecs="vp8, opus"' />
       Your browser does not support the video tag.
     </video>
     <div v-show="!canPlayWebm" class="unsupported-message">
-      Your browser does not support this video format.
+      Your browser does not support webm video format.
     </div>
   </div>
 </template>
