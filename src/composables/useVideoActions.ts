@@ -155,7 +155,7 @@ export function useVideoActions(
     state.isChapters.value = !state.isChapters.value
   }
 
-  const toogleTranscript = () => {
+  const toggleTranscript = () => {
     state.isTranscript.value = !state.isTranscript.value
   }
 
@@ -176,6 +176,6 @@ export function useVideoActions(
     togglePiP,
     toggleFullscreen,
     toggleChapters,
-    toogleTranscript,
+    toggleTranscript,
   }
 }

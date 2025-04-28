@@ -84,10 +84,11 @@ onBeforeUnmount(() => {
         <component :is="isTranscript ? ChevronUpIcon : ChevronDownIcon" />
       </button>
     </div>
-    <div class="transcript-list-wrap">
-      <Loader v-if="isTranscriptLoading" />
-      <Transition v-else name="accordion">
-        <div v-show="isTranscript">
+
+    <Transition name="accordion">
+      <div v-show="isTranscript" class="transcript-list-wrap">
+        <Loader v-if="isTranscriptLoading" />
+        <div v-else>
           <div v-if="transcript.length > 0" ref="transcriptList" class="transcript-list">
             <div
               v-for="(cue, index) in transcript"
@@ -107,8 +108,8 @@ onBeforeUnmount(() => {
           </div>
           <div v-else class="empty">No transcript available</div>
         </div>
-      </Transition>
-    </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -126,8 +127,8 @@ h2 {
 
 .transcript-list-wrap {
   position: relative;
-  min-height: 200px;
   border-radius: 30px 30px 12px 12px;
+  overflow: hidden;
 }
 
 .transcript-list {

@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import Loader from '@/components/Loader.vue'
 
-defineProps<{ src: string }>()
+const props = defineProps<{
+  src: string
+  isVideoLoading: boolean
+  isBuffering: boolean
+}>()
 defineEmits<{
   (e: 'ended'): void
   (e: 'loadedData'): void
@@ -15,27 +20,43 @@ defineEmits<{
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 
+const canPlayWebm = computed(() => {
+  if (!videoRef.value) return false
+  return videoRef.value.canPlayType('video/webm; codecs="vp8, opus"')
+})
+
+const shouldShowLoader = computed(() => {
+  return !canPlayWebm.value && (props.isVideoLoading || props.isBuffering)
+})
+
 defineExpose({ videoRef })
 </script>
 
 <template>
-  <video
-    ref="videoRef"
-    class="video"
-    preload="metadata"
-    aria-label="Video player with custom controls"
-    @ended="$emit('ended')"
-    @loadeddata="$emit('loadedData')"
-    @loadedmetadata="$emit('loadedMetadata', $event)"
-    @play="$emit('play')"
-    @playing="$emit('playing')"
-    @pause="$emit('pause')"
-    @timeupdate="$emit('timeUpdate', $event)"
-    @waiting="$emit('buffering')"
-  >
-    <source :src="src" type="video/webm" />
-    Your browser does not support the video tag.
-  </video>
+  <div>
+    <Loader v-if="shouldShowLoader" />
+    <video
+      v-show="canPlayWebm"
+      ref="videoRef"
+      class="video"
+      preload="metadata"
+      aria-label="Video player with custom controls"
+      @ended="$emit('ended')"
+      @loadeddata="$emit('loadedData')"
+      @loadedmetadata="$emit('loadedMetadata', $event)"
+      @play="$emit('play')"
+      @playing="$emit('playing')"
+      @pause="$emit('pause')"
+      @timeupdate="$emit('timeUpdate', $event)"
+      @waiting="$emit('buffering')"
+    >
+      <source :src="src" type='video/webm; codecs="vp8, opus"' />
+      Your browser does not support the video tag.
+    </video>
+    <div v-show="!canPlayWebm" class="unsupported-message">
+      Your browser does not support this video format.
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -43,5 +64,12 @@ defineExpose({ videoRef })
   width: 100%;
   height: auto;
   display: block;
+}
+
+.unsupported-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
 }
 </style>

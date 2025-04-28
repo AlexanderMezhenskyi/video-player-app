@@ -62,6 +62,7 @@ yarn <script_name>
 | `deploy`    | Deploys the `dist` folder to GitHub Pages using the `gh-pages` package. |
 
 ## 🌐 Proxy Server
+
 For some requests, a proxy server is used to handle CORS issues. The proxy server is deployed on Vercel and can be found in the following repository:
 
 [Proxy server repository - https://github.com/AlexanderMezhenskyi/video-player-app-proxy](https://github.com/AlexanderMezhenskyi/video-player-app-proxy)

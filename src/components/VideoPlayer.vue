@@ -58,7 +58,7 @@ const {
   togglePiP,
   toggleFullscreen,
   toggleChapters,
-  toogleTranscript,
+  toggleTranscript,
 } = useVideoPlayer(videoRef, videoPlayerRef)
 
 useChapters(chaptersUrl, chapters, currentChapter, isChaptersLoading)
@@ -78,11 +78,11 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
           role="region"
           aria-label="Custom video player with custom controls"
         >
-          <Loader v-if="isVideoLoading || isBuffering" />
-
           <VideoElement
             ref="videoComponentRef"
             :src="videoSource"
+            :isVideoLoading="isVideoLoading"
+            :isBuffering="isBuffering"
             @ended="onVideoEnded"
             @loadedData="onVideoLoaded"
             @loadedMetadata="onLoadedMetadata"
@@ -132,7 +132,7 @@ useActiveCue(currentTime, transcript, activeCueIndex, activeCue)
         :isTranscript="isTranscript"
         :isTranscriptLoading="isTranscriptLoading"
         @seek="onSeek"
-        @transcriptToggle="toogleTranscript"
+        @transcriptToggle="toggleTranscript"
       />
     </div>
     <div class="column column-right">
