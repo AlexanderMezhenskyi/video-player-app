@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import type { Chapter } from '@/types/types.ts'
-import type { TranscriptCue } from '@/types/types'
+import type { Chapter, TranscriptCue } from '@/types/types'
 
 export function useVideoState() {
   const currentTime = ref(0)

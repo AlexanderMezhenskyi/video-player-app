@@ -49,7 +49,6 @@ watch(activeCueIndex, (newIndex) => {
   ) {
     const container = transcriptList.value
     const activeElement = cueRefs.value[newIndex]
-
     const elementTop = activeElement.offsetTop
     const scrollPosition = elementTop - SCROLL_OFFSET
 

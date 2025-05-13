@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import Loader from '@/components/Loader.vue'
 
-const props = defineProps<{
+defineProps<{
   src: string
   isVideoLoading: boolean
   isBuffering: boolean
